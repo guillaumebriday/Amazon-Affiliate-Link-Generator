@@ -6,10 +6,9 @@ It's built in vanilla JavaScript prevents the importation of jquery (or equivale
 
 ## Installation
 
-
 You will need to change the variables "tag" and "access_token" with your personal information directly in the JavaScript as follows :
 
-```
+```javascript
 var tag = "your_amazon_personal_tag";
 var access_token = "your_bitly_personal_access_token";
 ```
