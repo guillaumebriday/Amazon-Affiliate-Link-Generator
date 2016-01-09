@@ -49,38 +49,36 @@
                 // If the amazon ASIN is available
                 if(asin){
                     var tag = "your_amazon_personal_tag";
-                    var access_token = "your_bitly_personal_access_token";
                     var longUrl = "http://www.amazon.fr/dp/" + asin + "/?tag=" + tag;
-                    var version = "v3";
-                    var format = "json";
-                    var method = "shorten";
-                    var endpoint = "https://api-ssl.bitly.com/" + version + "/" + method + "?access_token=" + access_token + "&longUrl=" + longUrl + "&format=" + format;
+                    var endpoint = "bitly.php";
+                    var params = "asin=" + asin + "&tag=" + tag;
 
+                    // Instant parsed url result
                     document.getElementById('longUrl').value = longUrl;
                     document.getElementById("group").classList.remove('has-error');
 
                     var request = new XMLHttpRequest();
-                    request.open('GET', endpoint, true);
+                    request.open('POST', endpoint, true); // asynchronous POST request
+                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-                    request.onload = function() {
-                        if (request.status >= 200 && request.status < 400) {
-                            var data = JSON.parse(request.response).data;
-                            var shortUrl = data.url;
+                    request.onreadystatechange = function(){
 
-                            document.getElementById('shortUrl').value = shortUrl;
+                        if(request.readyState == 4 && request.status == 200){
+                            if(JSON.parse(request.response).error){
+                                console.log (JSON.parse(request.response).error);
+                            } else {
+                                var data = JSON.parse(request.response).data;
+                                var shortUrl = data.url;
 
-                            directLink.href = shortUrl;
-                            directLink.innerHTML = shortUrl;
-                        } else {
-                            console.log('We reached our target server, but it returned an error');
+                                document.getElementById('shortUrl').value = shortUrl;
+
+                                directLink.href = shortUrl;
+                                directLink.innerHTML = shortUrl;
+                            }
                         }
                     };
 
-                    request.onerror = function() {
-                        console.log('There was a connection error of some sort');
-                    };
-
-                    request.send();
+                    request.send(params);
 
                 } else {
                     document.getElementById("group").classList.add('has-error');
